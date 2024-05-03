@@ -37,5 +37,18 @@ export class HomeComponent implements OnInit {
       noop,
       () => console.log("completed")
     );
+
+    //Reactive Design
+    this.beginnersCourses$ = courses$.pipe(
+      map((courses) =>
+        courses.filter((course) => course.category === "BEGINNER")
+      )
+    );
+
+    this.advancedCourses$ = courses$.pipe(
+      map((courses) =>
+        courses.filter((course) => course.category === "ADVANCED")
+      )
+    );
   }
 }
