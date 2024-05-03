@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
+import { noop, Observable } from "rxjs";
 import { Course } from "../model/course";
+import { createHttpObservable } from "../common/util";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "home",
@@ -15,5 +17,25 @@ export class HomeComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    //Use custom observables
+    const http$ = createHttpObservable("/api/courses");
+    const courses$: Observable<Course[]> = http$.pipe(
+      map((res) => res["payload"])
+    );
+
+    //Imperative Design
+    courses$.subscribe(
+      (courses) => {
+        this.beginnersCourses = courses.filter(
+          (course) => course.category === "BEGINNER"
+        );
+        this.advancedCourses = courses.filter(
+          (course) => course.category === "ADVANCED"
+        );
+      },
+      noop,
+      () => console.log("completed")
+    );
+  }
 }
