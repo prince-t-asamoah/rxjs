@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { noop, Observable } from "rxjs";
 import { Course } from "../model/course";
 import { createHttpObservable } from "../common/util";
-import { map } from "rxjs/operators";
+import { map, shareReplay, tap } from "rxjs/operators";
 
 @Component({
   selector: "home",
@@ -21,7 +21,9 @@ export class HomeComponent implements OnInit {
     //Use custom observables
     const http$ = createHttpObservable("/api/courses");
     const courses$: Observable<Course[]> = http$.pipe(
-      map((res) => res["payload"])
+      tap(() => console.log("Http request executed")),
+      map((res) => res["payload"]),
+      shareReplay()
     );
 
     //Imperative Design
